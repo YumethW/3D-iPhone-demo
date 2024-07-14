@@ -1,12 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ModelView from "./ModelView";
 import { yellowImg } from "../utils";
-import { models } from "../constants";
+import { models, sizes } from "../constants";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { View } from "@react-three/drei";
+import { animateWithGSAPTimeline } from "../utils/animations";
 
 export default function Model() {
   const [size, setSize] = useState("small");
@@ -24,6 +25,36 @@ export default function Model() {
 
   const [smallRotation, setSmallRotation] = useState(0);
   const [largeRotation, setLargeRotation] = useState(0);
+
+  const timeline = gsap.timeline();
+  useEffect(() => {
+    if (size === "large") {
+      animateWithGSAPTimeline(
+        timeline,
+        small,
+        smallRotation,
+        "#view1",
+        "#view2",
+        {
+          transform: "translateX(-100%)",
+          duration: 2
+        }
+      );
+    }
+    if (size === "small") {
+      animateWithGSAPTimeline(
+        timeline,
+        large,
+        largeRotation,
+        "#view2",
+        "#view1",
+        {
+          transform: "translateX(0)",
+          duration: 2
+        }
+      );
+    }
+  }, [size]);
 
   useGSAP(() => {
     gsap.to("#heading", {
@@ -89,6 +120,21 @@ export default function Model() {
                   />
                 ))}
               </ul>
+              <button className="size-btn-container">
+                {sizes.map(({ label, value }) => (
+                  <span
+                    key={label}
+                    className="size-btn"
+                    style={{
+                      backgroundColor: size === value ? "white" : "transparent",
+                      color: size === value ? "black" : "white",
+                    }}
+                    onClick={() => setSize(value)}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </button>
             </div>
           </div>
         </div>
