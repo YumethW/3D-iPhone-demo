@@ -3,6 +3,7 @@ import NavBar from "./componants/NavBar";
 import Hero from "./componants/Hero";
 import Highlights from "./componants/Highlights";
 import Model from "./componants/Model";
+import * as Sentry from "@sentry/react"
 
 const App = () => {
   return (
@@ -15,4 +16,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Sentry.withProfiler(App);
